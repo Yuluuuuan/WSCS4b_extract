@@ -1,0 +1,31 @@
+name: extract
+version: 1.0.0
+kind: ecu
+
+# Define the files that are part of the package
+files:
+- extract.py
+- data/
+- data/gadm36_ECU_shp/
+
+# Defines the file to call whenever a function is called
+entrypoint:
+  kind: task
+  exec: extract.py
+
+# Define the dependencies (as Ubuntu packages)
+dependencies:
+- python3
+- python3-pip
+- python3-yaml
+
+# Define the actions
+actions:
+  extract:
+    command:
+      args:
+      - extract
+    input:
+    output:
+    - name: contents
+      type: string
