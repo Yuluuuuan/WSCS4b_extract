@@ -24,6 +24,19 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      
+      - name: CacheBrane
+        id: cache_brane
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-brane
+        with:
+          path: ~/.brane
+          key: ${{ runner.os }}-build-${{env.cache-name}}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('package.json') }}
+          restore-keys:
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       # Runs a single command using the runners shell
       - name: Set up QEMU
@@ -56,7 +69,17 @@ jobs:
           make install
           docker buildx install
           docker buildx create --use
+      
+      - name: Set up brane CLI
+        if: ${{ steps.cache_brane.outputs.cache-hit == true }}
+        run: |
+          cd ~/.brane
+          sudo cp ./target/release/brane /usr/local/bin/brane
+          sudo chmod +x /usr/local/bin/brane
+          brane version
+      
       - name: Install brane CLI
+        if: ${{ steps.cache_brane.outputs.cache-hit == false }}
         run: |
           cd ~
           git clone https://github.com/epi-project/brane.git && cd brane
@@ -71,7 +94,7 @@ jobs:
         run: |
           brane build container.yml
         
-      - name: Import predicting package
+      - name: Import extract package
         shell: bash
         run: |
           (set -o pipefail && echo "import extract;" | brane repl -c)
