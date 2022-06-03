@@ -31,7 +31,7 @@ jobs:
         env:
           cache-name: cache-brane
         with:
-          path: ~/.brane
+          path: ~/brane
           key: ${{ runner.os }}-build-${{env.cache-name}}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('package.json') }}
           restore-keys:
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -73,7 +73,7 @@ jobs:
       - name: Set up brane CLI
         if: ${{ steps.cache_brane.outputs.cache-hit == true }}
         run: |
-          cd ~/.brane
+          cd ~/brane
           sudo cp ./target/release/brane /usr/local/bin/brane
           sudo chmod +x /usr/local/bin/brane
           brane version
