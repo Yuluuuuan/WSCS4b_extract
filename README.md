@@ -14,7 +14,7 @@ $ brane import Yuluuuuan/WSCS4b_extract
 There is one functions in this package:
 
 `extract()` \
-for . We can get 
+for extract() We can get "Done" as return, and files are added to target ``/data" folder.
 
 You can `test` the package to get an overview of these functions and corresponding parameters:
 ```bash
